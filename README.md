@@ -1,5 +1,5 @@
 ﻿# P-EnterBot!
-### Press 'q' to quit the macro
+### Press 'q' to stop the bot
 ### Designed for MD5
 ### Works with 1920x1080 resolution with fullscreen
 ### Configure your teams in the Config/TeamConfig.csv file
