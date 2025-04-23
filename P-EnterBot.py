@@ -578,5 +578,3 @@ if __name__ == '__main__':
         if keyboard.is_pressed('q'): #failsafe
             process.terminate()
             break
-        if keyboard.is_pressed('z'): #debug tool
-            pyautogui.mouseInfo()
