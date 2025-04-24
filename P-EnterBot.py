@@ -1,5 +1,12 @@
-import pyautogui, cv2, os, time, mss, keyboard,csv,numpy, multiprocessing
-from PIL import Image
+import multiprocessing
+import pathlib
+import time
+import csv
+import os
+
+import pyautogui
+import keyboard
+
 
 pyautogui.FAILSAFE = False
 
@@ -7,16 +14,20 @@ script_path = os.path.abspath(__file__)
 script_directory = os.path.dirname(script_path)
 os.chdir(script_directory)
 
+IMAGE_DIR = pathlib.Path('Images/')
+
 #default value for teams
 #program uses csv file for teams after csv file is created
-teams = [[1, "Charge","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya", "Sinclair", "Outis", "Gregor"],
-                    [2, "Sinking","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya", "Sinclair", "Outis", "Gregor"],
-                    [3, "Bleed","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya",  "Sinclair", "Outis", "Gregor"],
-                    [4, "Burn","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya", "Sinclair", "Outis", "Gregor"],
-                    [5, "Rupture","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya", "Sinclair", "Outis", "Gregor"],
-                    [6, "Tremor","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya", "Sinclair", "Outis", "Gregor"],]
+teams = [
+    [1, "Charge","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya", "Sinclair", "Outis", "Gregor"],
+    [2, "Sinking","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya", "Sinclair", "Outis", "Gregor"],
+    [3, "Bleed","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya",  "Sinclair", "Outis", "Gregor"],
+    [4, "Burn","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya", "Sinclair", "Outis", "Gregor"],
+    [5, "Rupture","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya", "Sinclair", "Outis", "Gregor"],
+    [6, "Tremor","YiSang", "Faust", "Don", "Ryoshu", "Meursault", "HongLu", "Heathcliff", "Ishmael", "Rodya", "Sinclair", "Outis", "Gregor"]
+]
 
-sinnerCoordinates = {
+SINNER_COORDINATES = {
     "yisang": (435, 339),
     "faust": (637, 331),
     "don": (838, 340),
@@ -142,7 +153,7 @@ def getToMirrorDungeon():
                 pass
             case _:
                 return
-                
+
 
 
 def getRestBonus() -> int:
@@ -277,7 +288,7 @@ def teamConfigRoutine():
                 teams.append(row)
             i += 1
         curTeam = teams[0]
-        
+
 
 def makeConfig():
     with open("Config/TeamConfig.csv", 'w', newline='') as csvfile:
@@ -324,17 +335,19 @@ def selectStartingGifts():
     pyautogui.click(1463,713)
     #end selection
     pyautogui.click(1620,870)
-        
+
 
 #main
 def mainFunc():
-    curState = -1
-    runNum = pyautogui.prompt(text = "Enter number of MD runs", title = "StartMenu", default = 1)
-    try:
-        runNum = int(runNum)
-    except:
+    curState: int = -1
+    runNum: str = pyautogui.prompt(text = "Enter number of MD runs", title = "StartMenu", default = 1)
+
+    if not runNum.isdigit():
         print("Number of runs must be integer")
         quit()
+
+    runNum = int(runNum)
+
     time.sleep(0.1)
     teamConfigRoutine()
     setScreenSize()
@@ -469,7 +482,7 @@ def mainFunc():
                     pyautogui.click(1145, 740)
                     time.sleep(0.5)
                 for i in range(12):
-                    pyautogui.click(sinnerCoordinates[curTeam[i+2].lower()])
+                    pyautogui.click(SINNER_COORDINATES[curTeam[i+2].lower()])
                 time.sleep(0.25)
                 pyautogui.click(1720,880)
                 time.sleep(0.5)
@@ -565,15 +578,14 @@ def mainFunc():
                         pyautogui.click(1700, 900)
                     time.sleep(0.1)
         time.sleep(0.1)
-        
-        
 
-        
+
+
 if __name__ == '__main__':
     multiprocessing.freeze_support()
     process = multiprocessing.Process(target=mainFunc)#multiprocess with main function so failsafe key can be detected whenever
     process.start()
-    while process.is_alive(): 
+    while process.is_alive():
         time.sleep(0.1)
         if keyboard.is_pressed('q'): #failsafe
             process.terminate()
