@@ -295,27 +295,27 @@ def selectBuffs():
     pyautogui.click(1706,991)
 
 def selectStartingGifts():
-    giftType = curTeam[1]
+    giftType = curTeam[1].lower()
     match giftType:
-        case "Charge":
+        case "charge":
             pyautogui.click(758,667)
-        case "Sinking":
+        case "sinking":
             pyautogui.click(307,680)
-        case "Poise":
+        case "poise":
             pyautogui.click(522,669)
-        case "Rupture":
+        case "rupture":
             pyautogui.click(975,359)
-        case "Tremor":
+        case "tremor":
             pyautogui.click(748,362)
-        case "Bleed":
+        case "bleed":
             pyautogui.click(520,360)
-        case "Burn":
+        case "burn":
             pyautogui.click(312,365)
-        case "Slash":
+        case "slash":
             pyautogui.click(980,685)
-        case "Blunt":
+        case "blunt":
             pyautogui.click(533,844)
-        case "Pierce":
+        case "pierce":
             pyautogui.click(313,846)
     time.sleep(0.1)
     #select gifts from top to bottom
