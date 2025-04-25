@@ -6,7 +6,7 @@ import os
 import pyautogui
 import keyboard
 
-import LimbusCompany
+import MirrorDungeonRunner
 
 parser = argparse.ArgumentParser(
     prog="(L.C.M.D.D.S) : Limbus Company Mirror Dungeon Do-er Script"
@@ -31,7 +31,7 @@ def main():
     else:
         runs = args.runs
 
-    mirror_dungeon_runner = LimbusCompany.MirrorDungeonRunner()
+    mirror_dungeon_runner = MirrorDungeonRunner.MirrorDungeonRunner()
     for i in range(runs):
         mirror_dungeon_runner.run_md()
 
