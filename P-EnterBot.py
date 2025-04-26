@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser(
     prog="(L.C.M.D.D.S) : Limbus Company Mirror Dungeon Do-er Script"
 )
 parser.add_argument('-r', '--runs', type=int)
+parser.add_argument('-t', '--team', type=int)
 
 pyautogui.FAILSAFE = False
 
@@ -34,6 +35,7 @@ def main():
 
     mirror_dungeon_runner = MirrorDungeonRunner.MirrorDungeonRunner()
     for i in range(runs):
+        print(f"Doing run {i}")
         mirror_dungeon_runner.run_md()
 
 if __name__ == '__main__':

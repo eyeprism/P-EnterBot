@@ -70,7 +70,7 @@ GAME_ELEMENTS = {
     "EGOGift_Confirm" : GameElement(-2, "EGOGift_Confirm.png", grayscale=False),
     "Pack_Hard" : GameElement(-2, "Pack_Hard.png", grayscale=False),
     "Pack_Hanger" : GameElement(-2, "Pack_Hanger.png", grayscale=False),
-    "Clock_Face" : GameElement(-2, "Clock_Face.png", confidence=0.9, grayscale=False),
+    "Clock_Face" : GameElement(-2, "Clock_Face.png", confidence=0.7, grayscale=False),
     "Enter_Node" : GameElement(-2, "Enter_Node.png", confidence=0.9, grayscale=False),
     "Event_Choices" : GameElement(-2, "Event_Choices.png", grayscale=False),
     "Event_EGOGIFT" : GameElement(-2, "Event_EGOGIFT.png", confidence=0.7, grayscale=False),
@@ -89,11 +89,16 @@ GAME_ELEMENTS = {
     "Shop_Leave" : GameElement(-2, "Shop_Leave.png", grayscale=False),
     "Reward_EGOGIFT" : GameElement(-2, "Reward_EGOGIFT.png", grayscale=False),
     "Reward_Cost" : GameElement(-2, "Reward_Cost.png", grayscale=False),
-    "AcquireEGOGIFT" : GameElement(-2, "AcquireEGOGIFT.png", confidence=0.95, grayscale=False),
+    "AcquireEGOGIFT" : GameElement(-2, "AcquireEGOGIFT.png", confidence=0.9, grayscale=False),
     "Plus1" : GameElement(-2, "Plus1.png", confidence=0.95, grayscale=False),
     "End_NoRewards" : GameElement(-2, "End_NoRewards.png", grayscale=False),
     "Shop_Item1" : GameElement(-2, "Shop_Item.png", (1051,325,850,700), confidence=0.935),
-    "Shop_Item2" : GameElement(-2, "Shop_Item.png", (821,563,1150,500), confidence=0.935)
+    "Shop_Item2" : GameElement(-2, "Shop_Item.png", (821,563,1150,500), confidence=0.935),
+    "Rest1" : GameElement(-2, "Rest1.png", confidence=0.97, grayscale=False),
+    "Rest2" : GameElement(-2, "Rest2.png", confidence=0.97, grayscale=False),
+    "Rest3" : GameElement(-2, "Rest3.png", confidence=0.97, grayscale=False),
+    "Rest4" : GameElement(-2, "Rest4.png", confidence=0.97, grayscale=False),
+    "Rest5" : GameElement(-2, "Rest5.png", confidence=0.955, grayscale=False)
 }
 
 
@@ -300,22 +305,16 @@ class MirrorDungeonRunner:
         pyautogui.click(1706,991)
 
     def get_rest_bonus(self) -> int:
-        nums = set()
+        rest_bonus = 0
 
-        for i in range(0, 10):
-            temp = self.locate_all_on_screen(GAME_ELEMENTS[f'RestBonus_{i}'])
+        # TODO : Add rest bonuses beyond 5 xD
+        for i in range(1, 6):
+            temp = self.locate_all_on_screen(GAME_ELEMENTS[f'Rest{i}'])
             if temp:
-                for n in temp:
-                    nums.add((n.left, i))
+                logging.debug(f'{len(temp)}, {i} rest bonuses')
+                rest_bonus += min(len(temp), 12) * i
 
-        digitList: list = sorted(nums, reverse=True)
-        returnVal = 0
-        counter = 0
-        for digit in digitList:
-            returnVal += digit[1] * (10 ** counter)
-            counter += 1
-
-        return returnVal
+        return rest_bonus
 
     def scrollTo(self, dest: int, cur: int) -> int:
         diff: int = cur - dest
@@ -408,12 +407,12 @@ class MirrorDungeonRunner:
 
             time.sleep(0.1)
 
+            if self.curState == -1:
+                self.get_to_mirror_dungeon()
+
             self.curState = self.find_state()
 
             logging.debug(f'{self.curState=}')
-
-            if self.curState == -1:
-                self.get_to_mirror_dungeon()
 
             if not self.process_state():
                 break
@@ -503,6 +502,7 @@ class MirrorDungeonRunner:
                         x += 330
                         y -= 280
                         pyautogui.click(x, y)
+                        time.sleep(0.2)
                         located = True
 
                 failCounter = 0
@@ -515,7 +515,8 @@ class MirrorDungeonRunner:
                         if failCounter > 3:
                             break
                     time.sleep(0.35)
-                    pyautogui.click(1704,810)
+                    # pyautogui.click(1704,810)
+                    pyautogui.press('enter')
             case 13: # Event
                 self.do_event()
             case 14: # Pre-fight Sinner Selection
