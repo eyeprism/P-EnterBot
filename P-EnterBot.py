@@ -24,10 +24,11 @@ args = parser.parse_args()
 def main():
     runs = 0
     if not args.runs:
-        user_input = pyautogui.prompt(text = "Enter number of MD runs", title = "StartMenu", default = 1)
-        if type(user_input) != int:
+        user_input: str = pyautogui.prompt(text = "Enter number of MD runs", title = "StartMenu", default = 1)
+        if not user_input.isnumeric():
             print("Number of runs must be integer")
             exit(1)
+        runs = int(user_input)
     else:
         runs = args.runs
 

@@ -5,11 +5,11 @@ import csv
 import os
 
 from dataclasses import dataclass
-from typing import Self, overload
+from typing import Self
 
 import pyautogui
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s:%(funcName)s - %(message)s', level=logging.DEBUG)
 
 IMAGE_DIR = pathlib.Path('Images/')
 
@@ -20,6 +20,9 @@ class GameElement:
     region: tuple[int, int, int, int] | None = None
     confidence: float = 0.8
     grayscale: bool = True
+
+    def __str__(self) -> str:
+        return f'{self.id=} {self.image=} {self.region=} {self.confidence=} {self.grayscale=}'
 
 REST_BONUS_REGION = (1750,780,60,60)
 
@@ -37,7 +40,7 @@ GAME_ELEMENTS = {
     "EGO_GIFT_GET" : GameElement(10, "EGO_GIFT_GET.png", (817,249,350,100)),
     "Theme_pack" : GameElement(11, "Theme_pack.png", (967,150,250,100)),
     "NodeSelect" : GameElement(12, "NodeSelect.png", (1802,115,100,100), 0.9),
-    "Event_Skip" : GameElement(13, "Event_Skip.png", (849,443,150,100)),
+    "Event_Skip" : GameElement(13, "Event_Skip.png"),
     "Team_Total_Participants" : GameElement(14, "Team_TotalParticipants.png", (1595,750,150,100)),
     "Battle_Winrate" : GameElement(15, "Battle_Winrate.png", (800,750,1120,200)),
     "Shop_Refresh" : GameElement(16, "Shop_Refresh.png", (1385,147,250,100)),
@@ -50,46 +53,47 @@ GAME_ELEMENTS = {
     "End_ExplorationReward" : GameElement(23, "End_ExplorationReward.png", (725,126,400,100)),
     "End_ExplorationComplete" : GameElement(24, "End_ExplorationComplete.png", (179,112,300,200)),
     "End_Defeat" : GameElement(25, "End_Defeat.png", (1475,192,300,150)),
-    "RestBonus_0" : GameElement(-1, "RestBonus_0.png", REST_BONUS_REGION, 0.95, False),
-    "RestBonus_1" : GameElement(-1, "RestBonus_1.png", REST_BONUS_REGION, 0.9, False),
-    "RestBonus_2" : GameElement(-1, "RestBonus_2.png", REST_BONUS_REGION, 0.9, False),
-    "RestBonus_3" : GameElement(-1, "RestBonus_3.png", REST_BONUS_REGION, 0.9, False),
-    "RestBonus_4" : GameElement(-1, "RestBonus_4.png", REST_BONUS_REGION, 0.9, False),
-    "RestBonus_5" : GameElement(-1, "RestBonus_5.png", REST_BONUS_REGION, 0.925, False),
-    "RestBonus_6" : GameElement(-1, "RestBonus_6.png", REST_BONUS_REGION, 0.9, False),
-    "RestBonus_7" : GameElement(-1, "RestBonus_7.png", REST_BONUS_REGION, 0.925),
-    "RestBonus_8" : GameElement(-1, "RestBonus_8.png", REST_BONUS_REGION, 0.95, False),
-    "RestBonus_9" : GameElement(-1, "RestBonus_9.png", REST_BONUS_REGION, 0.9, False),
-    "ResumeMD5" : GameElement(-1, "ResumeMD5.png", (781,566,400,100)),
-    "Teams" : GameElement(-1, "Teams.png", (72,527,200,100)),
-    "ConfirmTeam" : GameElement(-1, "ConfirmTeam.png"),
-    "ConfirmBuff" : GameElement(-1, "ConfirmBuff.png"),
-    "EGOGift_Confirm" : GameElement(-1, "EGOGift_Confirm.png", grayscale=False),
-    "Pack_Hard" : GameElement(-1, "Pack_Hard.png", grayscale=False),
-    "Pack_Hanger" : GameElement(-1, "Pack_Hanger.png", grayscale=False),
-    "Clock_Face" : GameElement(-1, "Clock_Face.png", confidence=0.9, grayscale=False),
-    "Enter_Node" : GameElement(-1, "Enter_Node.png", confidence=0.9, grayscale=False),
-    "Event_Choices" : GameElement(-1, "Event_Choices.png", grayscale=False),
-    "Event_EGOGIFT" : GameElement(-1, "Event_EGOGIFT.png", confidence=0.7, grayscale=False),
-    "Event_Predicted" : GameElement(-1, "Event_Predicted", grayscale=False),
-    "Event_VeryHigh" : GameElement(-1, "Event_VeryHigh.png", confidence=0.7, grayscale=False),
-    "Event_High" : GameElement(-1, "Event_High.png", confidence=0.7, grayscale=False),
-    "Event_Normal" : GameElement(-1, "Event_Normal.png", confidence=0.7, grayscale=False),
-    "Event_Low" : GameElement(-1, "Event_Low.png", confidence=0.7, grayscale=False),
-    "Event_VeryLow" : GameElement(-1, "Event_Low.png", confidence=0.7, grayscale=False),
-    "Event_Commence" : GameElement(-1, "Event_Commence.png", grayscale=False),
-    "Event_Continue" : GameElement(-1, "Event_Continue.png", grayscale=False),
-    "Event_Proceed" : GameElement(-1, "Event_Proceed.png", grayscale=False),
-    "Event_CommenceBattle" : GameElement(-1, "Event_CommenceBattle.png", grayscale=False),
-    "Event_Skip" : GameElement(-1, "Event_Skip.png", (849,443,150,100)),
-    "Team_ClearSelection" : GameElement(-1, "Team_ClearSelection.png", confidence=0.925, grayscale=False),
-    "Shop_Item" : GameElement(-1, "Shop_Item.png", (1051,325,850,700), confidence=0.935),
-    "Shop_Leave" : GameElement(-1, "Shop_Leave.png", grayscale=False),
-    "Reward_EGOGIFT" : GameElement(-1, "Reward_EGOGIFT.png", grayscale=False),
-    "Reward_Cost" : GameElement(-1, "Reward_Cost.png", grayscale=False),
-    "AcquireEGOGIFT" : GameElement(-1, "AquireEGOGIFT.png", confidence=0.95, grayscale=False),
-    "Plus1" : GameElement(-1, "Plus1.png", confidence=0.95, grayscale=False),
-    "End_NoRewards" : GameElement(-1, "End_NoRewards.png", grayscale=False)
+    "RestBonus_0" : GameElement(-2, "RestBonus_0.png", REST_BONUS_REGION, 0.95, False),
+    "RestBonus_1" : GameElement(-2, "RestBonus_1.png", REST_BONUS_REGION, 0.9, False),
+    "RestBonus_2" : GameElement(-2, "RestBonus_2.png", REST_BONUS_REGION, 0.9, False),
+    "RestBonus_3" : GameElement(-2, "RestBonus_3.png", REST_BONUS_REGION, 0.9, False),
+    "RestBonus_4" : GameElement(-2, "RestBonus_4.png", REST_BONUS_REGION, 0.9, False),
+    "RestBonus_5" : GameElement(-2, "RestBonus_5.png", REST_BONUS_REGION, 0.925, False),
+    "RestBonus_6" : GameElement(-2, "RestBonus_6.png", REST_BONUS_REGION, 0.9, False),
+    "RestBonus_7" : GameElement(-2, "RestBonus_7.png", REST_BONUS_REGION, 0.925),
+    "RestBonus_8" : GameElement(-2, "RestBonus_8.png", REST_BONUS_REGION, 0.95, False),
+    "RestBonus_9" : GameElement(-2, "RestBonus_9.png", REST_BONUS_REGION, 0.9, False),
+    "ResumeMD5" : GameElement(-2, "ResumeMD5.png", (781,566,400,100)),
+    "Teams" : GameElement(-2, "Teams.png", (72,527,200,100)),
+    "ConfirmTeam" : GameElement(-2, "ConfirmTeam.png"),
+    "ConfirmBuff" : GameElement(-2, "ConfirmBuff.png"),
+    "EGOGift_Confirm" : GameElement(-2, "EGOGift_Confirm.png", grayscale=False),
+    "Pack_Hard" : GameElement(-2, "Pack_Hard.png", grayscale=False),
+    "Pack_Hanger" : GameElement(-2, "Pack_Hanger.png", grayscale=False),
+    "Clock_Face" : GameElement(-2, "Clock_Face.png", confidence=0.9, grayscale=False),
+    "Enter_Node" : GameElement(-2, "Enter_Node.png", confidence=0.9, grayscale=False),
+    "Event_Choices" : GameElement(-2, "Event_Choices.png", grayscale=False),
+    "Event_EGOGIFT" : GameElement(-2, "Event_EGOGIFT.png", confidence=0.7, grayscale=False),
+    "Event_Predicted" : GameElement(-2, "Event_Predicted.png", grayscale=False),
+    "Event_VeryHigh" : GameElement(-2, "Event_VeryHigh.png", confidence=0.7, grayscale=False),
+    "Event_High" : GameElement(-2, "Event_High.png", confidence=0.7, grayscale=False),
+    "Event_Normal" : GameElement(-2, "Event_Normal.png", confidence=0.7, grayscale=False),
+    "Event_Low" : GameElement(-2, "Event_Low.png", confidence=0.7, grayscale=False),
+    "Event_VeryLow" : GameElement(-2, "Event_Low.png", confidence=0.7, grayscale=False),
+    "Event_Commence" : GameElement(-2, "Event_Commence.png", grayscale=False),
+    "Event_Continue" : GameElement(-2, "Event_Continue.png", grayscale=False),
+    "Event_Proceed" : GameElement(-2, "Event_Proceed.png", grayscale=False),
+    "Event_CommenceBattle" : GameElement(-2, "Event_CommenceBattle.png", grayscale=False),
+    "Team_ClearSelection" : GameElement(-2, "Team_ClearSelection.png", confidence=0.925, grayscale=False),
+    "Shop_Item" : GameElement(-2, "Shop_Item.png", (1051,325,850,700), confidence=0.935),
+    "Shop_Leave" : GameElement(-2, "Shop_Leave.png", grayscale=False),
+    "Reward_EGOGIFT" : GameElement(-2, "Reward_EGOGIFT.png", grayscale=False),
+    "Reward_Cost" : GameElement(-2, "Reward_Cost.png", grayscale=False),
+    "AcquireEGOGIFT" : GameElement(-2, "AcquireEGOGIFT.png", confidence=0.95, grayscale=False),
+    "Plus1" : GameElement(-2, "Plus1.png", confidence=0.95, grayscale=False),
+    "End_NoRewards" : GameElement(-2, "End_NoRewards.png", grayscale=False),
+    "Shop_Item1" : GameElement(-2, "Shop_Item.png", (1051,325,850,700), confidence=0.935),
+    "Shop_Item2" : GameElement(-2, "Shop_Item.png", (821,563,1150,500), confidence=0.935)
 }
 
 
@@ -189,23 +193,8 @@ class MirrorDungeonRunner:
 
         self.curTeam = self.teams[0]
 
-    @overload
-    def on_screen(self, image: str, confidence: float | None = 0.999, grayscale: bool | None = True, region: tuple[int, int, int, int] | None = (0,0,1920,1080)) -> bool:
-        image_path: pathlib.Path = IMAGE_DIR.joinpath(image)
-        try:
-            pyautogui.locateOnScreen(
-                image_path,
-                confidence=confidence,
-                grayscale=grayscale,
-                region=region
-            )
-            return True
-        except:
-            return False
-
-    @overload
     def on_screen(self, game_element: GameElement) -> bool:
-        image_path: pathlib.Path = IMAGE_DIR.joinpath(game_element.image)
+        image_path: str = str(IMAGE_DIR.joinpath(game_element.image))
         try:
             pyautogui.locateOnScreen(
                 image_path,
@@ -219,7 +208,7 @@ class MirrorDungeonRunner:
 
     # Pylance say's it's return a "Box" but i can't find what lib that's from, so i'm calling it a tuple
     def locate_on_screen(self, game_element: GameElement) -> tuple | None:
-        image_path: pathlib.Path = IMAGE_DIR.joinpath(game_element.image)
+        image_path: str = str(IMAGE_DIR.joinpath(game_element.image))
         try:
             return pyautogui.locateOnScreen(
                 image_path,
@@ -231,20 +220,24 @@ class MirrorDungeonRunner:
             return
 
     def locate_all_on_screen(self, game_element: GameElement):
-        image_path: pathlib.Path = IMAGE_DIR.joinpath(game_element.image)
+        image_path: str = str(IMAGE_DIR.joinpath(game_element.image))
         try:
-            return pyautogui.locateAllOnScreen(
+            things = list(pyautogui.locateAllOnScreen(
                 image_path,
                 confidence=game_element.confidence,
                 grayscale=game_element.grayscale,
                 region=game_element.region
-            )
+            ))
+            return things
         except:
-            return
+            return None
 
     def click_element(self, game_element: GameElement) -> bool:
         try:
-            pyautogui.click(self.locate_on_screen(game_element))
+            location = self.locate_on_screen(game_element)
+            if not location:
+                return False
+            pyautogui.click(location)
             return True
         except:
             return False
@@ -264,6 +257,10 @@ class MirrorDungeonRunner:
             game_element: GameElement = GAME_ELEMENTS[state_name]
 
             if self.on_screen(game_element):
+                if game_element.id == 1: # aka it's the drive button
+                    if self.on_screen(GAME_ELEMENTS['MD5Button']):
+                        return 2
+
                 return game_element.id
 
         return -1
@@ -287,7 +284,7 @@ class MirrorDungeonRunner:
                     self.click_element(GameElement(3, "MD5StartButton.png", (715,255,550,650), 0.2))
                 case 4:
                     self.click_element(GAME_ELEMENTS['EnterMD5'])
-                case 5:
+                case 6:
                     self.click_element(GAME_ELEMENTS['ResumeMD5'])
                 case -1:
                     pass
@@ -306,7 +303,8 @@ class MirrorDungeonRunner:
         nums = set()
 
         for i in range(0, 10):
-            if (temp := self.locate_all_on_screen(GAME_ELEMENTS[f'RestBonus_{i}'])):
+            temp = self.locate_all_on_screen(GAME_ELEMENTS[f'RestBonus_{i}'])
+            if temp:
                 for n in temp:
                     nums.add((n.left, i))
 
@@ -321,6 +319,8 @@ class MirrorDungeonRunner:
 
     def scrollTo(self, dest: int, cur: int) -> int:
         diff: int = cur - dest
+        if diff == 0:
+            return cur
         baseDrag = 86
 
         move = baseDrag * diff / abs(diff)
@@ -330,12 +330,12 @@ class MirrorDungeonRunner:
             pyautogui.moveRel(0, move, duration=0.3, tween=pyautogui.easeOutQuad)
             time.sleep(0.3)
             pyautogui.mouseUp()
-            pyautogui.moveRel(0, -move, duration=0.3)
+            pyautogui.moveRel(0, -move)
 
         return dest
 
     def selectTeam(self) -> None:
-        self.move_to_element(GAME_ELEMENTS['TEAMS'])
+        self.move_to_element(GAME_ELEMENTS['Teams'])
         pyautogui.moveRel(0, 50)
 
         for i in range(30):
@@ -360,7 +360,7 @@ class MirrorDungeonRunner:
 
                 # TODO : get rid of id int as the first item in the list
                 maxTeamRow = int(team[0])
-                curTeam = team
+                self.curTeam = team
 
         curRow = self.scrollTo(maxTeamRow, curRow)
         time.sleep(0.1)
@@ -406,14 +406,14 @@ class MirrorDungeonRunner:
         while True:
             self._neutralizeMousePos()
 
-            if self.curState == -1:
-                self.get_to_mirror_dungeon()
-
             time.sleep(0.1)
 
             self.curState = self.find_state()
 
             logging.debug(f'{self.curState=}')
+
+            if self.curState == -1:
+                self.get_to_mirror_dungeon()
 
             if not self.process_state():
                 break
@@ -430,7 +430,8 @@ class MirrorDungeonRunner:
         # Try to click best chances
         if self.on_screen(GAME_ELEMENTS["Event_Predicted"]):
             for chance in ['VeryHigh', 'High', 'Normal', 'Low', 'VeryLow']:
-                self.click_element(GAME_ELEMENTS[f'Event_{chance}'])
+                if self.click_element(GAME_ELEMENTS[f'Event_{chance}']):
+                    break
 
         for event_state in ['Commence', 'Continue', 'Proceed', 'CommenceBattle']:
             element_name = f'Event_{event_state}'
@@ -449,6 +450,24 @@ class MirrorDungeonRunner:
             pyautogui.click()
             pyautogui.click()
 
+    def do_shop(self) -> None:
+        for shop_name in ["Shop_Item1", "Shop_Item2"]:
+            shopItems = self.locate_all_on_screen(GAME_ELEMENTS[shop_name])
+            if not shopItems:
+                continue
+
+            for i in shopItems:
+                pyautogui.click(i)
+                time.sleep(0.75)
+                pyautogui.click(1120,712)
+                time.sleep(0.75)
+                pyautogui.click(945,800)
+                time.sleep(0.5)
+
+        self.click_element(GAME_ELEMENTS['Shop_Leave'])
+        time.sleep(0.5)
+        pyautogui.click(1171,743)
+
     # Main MD Logic Loop
     def process_state(self) -> bool:
         match self.curState:
@@ -466,16 +485,16 @@ class MirrorDungeonRunner:
                     self.selectStartingGifts()
             case 10:
                 if self.on_screen(GAME_ELEMENTS['EGO_GIFT_GET']):
-                    self.click_element(GAME_ELEMENTS['EGOGift_Confirm.png'])
+                    self.click_element(GAME_ELEMENTS['EGOGift_Confirm'])
             case 11: # Pack Selection
                 if self.on_screen(GAME_ELEMENTS['Pack_Hard']):
                     pyautogui.click(1363, 100)
                 self.move_to_element(GAME_ELEMENTS['Pack_Hanger'])
                 pyautogui.dragRel(0, 500, 1)
             case 12: # Node Selection
+                located = False
                 if self.on_screen(GAME_ELEMENTS['Clock_Face']):
                     time.sleep(0.5)
-                    located = False
                     coords: tuple = self.locate_on_screen(GAME_ELEMENTS['Clock_Face'])
                     if coords:
                         x, y = pyautogui.center(coords)
