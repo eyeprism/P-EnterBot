@@ -38,7 +38,7 @@ GAME_ELEMENTS = {
     "Will_You_Buff" : GameElement(8, "Will_You_Buff.png", (760,293,450,100), 0.75),
     "Starting_Gift" : GameElement(9, "Starting_Gift.png", (1100,150,600,300)),
     "EGO_GIFT_GET" : GameElement(10, "EGO_GIFT_GET.png", (817,249,350,100)),
-    "Theme_pack" : GameElement(11, "Theme_pack.png", (967,150,250,100)),
+    "Theme_Pack" : GameElement(11, "Theme_Pack.png", (967,150,250,100)),
     "NodeSelect" : GameElement(12, "NodeSelect.png", (1802,115,100,100), 0.9),
     "Event_Skip" : GameElement(13, "Event_Skip.png"),
     "Team_Total_Participants" : GameElement(14, "Team_TotalParticipants.png", (1595,750,150,100)),
@@ -113,7 +113,7 @@ BASE_STATES = [
     "Will_You_Buff",
     "Starting_Gift",
     "EGO_GIFT_GET",
-    "Theme_pack",
+    "Theme_Pack",
     "NodeSelect",
     "Event_Skip",
     "Team_Total_Participants",
@@ -517,6 +517,9 @@ class MirrorDungeonRunner:
                     time.sleep(0.35)
                     # pyautogui.click(1704,810)
                     pyautogui.press('enter')
+
+                if self.on_screen(GAME_ELEMENTS['Enter_Node']):
+                    pyautogui.press('enter')
             case 13: # Event
                 self.do_event()
             case 14: # Pre-fight Sinner Selection
@@ -525,11 +528,11 @@ class MirrorDungeonRunner:
                     time.sleep(0.5)
                     pyautogui.click(1145, 740)
                     time.sleep(0.5)
-                    for i in range(12):
-                        pyautogui.click(SINNER_COORDINATES[self.curTeam[i+2].lower()])
-                    time.sleep(0.25)
-                    pyautogui.click(1720,880)
-                    time.sleep(0.5)
+                for i in range(12):
+                    pyautogui.click(SINNER_COORDINATES[self.curTeam[i+2].lower()])
+                time.sleep(0.25)
+                pyautogui.click(1720,880)
+                time.sleep(0.5)
             case 15: # OMG P-ENTER!!!
                 pyautogui.click(self.width / 2, self.height / 6)
                 time.sleep(0.05)
