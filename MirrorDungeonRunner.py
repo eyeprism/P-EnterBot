@@ -79,7 +79,7 @@ GAME_ELEMENTS = {
     "Event_High" : GameElement(-2, "Event_High.png", confidence=0.7, grayscale=False),
     "Event_Normal" : GameElement(-2, "Event_Normal.png", confidence=0.7, grayscale=False),
     "Event_Low" : GameElement(-2, "Event_Low.png", confidence=0.7, grayscale=False),
-    "Event_VeryLow" : GameElement(-2, "Event_Low.png", confidence=0.7, grayscale=False),
+    "Event_VeryLow" : GameElement(-2, "Event_VeryLow.png", confidence=0.7, grayscale=False),
     "Event_Commence" : GameElement(-2, "Event_Commence.png", grayscale=False),
     "Event_Continue" : GameElement(-2, "Event_Continue.png", grayscale=False),
     "Event_Proceed" : GameElement(-2, "Event_Proceed.png", grayscale=False),
