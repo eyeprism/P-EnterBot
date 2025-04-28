@@ -43,7 +43,7 @@ GAME_ELEMENTS = {
     "Event_Skip" : GameElement(13, "Event_Skip.png"),
     "Team_Total_Participants" : GameElement(14, "Team_TotalParticipants.png", (1595,750,150,100)),
     "Battle_Winrate" : GameElement(15, "Battle_Winrate.png", (800,750,1120,200)),
-    "Shop_Refresh" : GameElement(16, "Shop_Refresh.png", (1385,147,250,100)),
+    "Shop_Refresh" : GameElement(-2, "Shop_Refresh.png", (1385,147,250,100)),
     "Select_Encounter_Reward" : GameElement(17, "Select_Encounter_Reward.png", (383, 148,850,150)),
     "RefuseGift" : GameElement(18, "RefuseGift.png", (1285,816,300,150)),
     "End_Passlvlup" : GameElement(19, "End_Passlvlup.png", (818,347,350,100)),
@@ -86,7 +86,7 @@ GAME_ELEMENTS = {
     "Event_CommenceBattle" : GameElement(-2, "Event_CommenceBattle.png", grayscale=False),
     "Team_ClearSelection" : GameElement(-2, "Team_ClearSelection.png", confidence=0.925, grayscale=False),
     "Shop_Item" : GameElement(-2, "Shop_Item.png", (1051,325,850,700), confidence=0.935),
-    "Shop_Leave" : GameElement(-2, "Shop_Leave.png", grayscale=False),
+    "Shop_Leave" : GameElement(16, "Shop_Leave.png", grayscale=False),
     "Reward_EGOGIFT" : GameElement(-2, "Reward_EGOGIFT.png", grayscale=False),
     "Reward_Cost" : GameElement(-2, "Reward_Cost.png", grayscale=False),
     "AcquireEGOGIFT" : GameElement(-2, "AcquireEGOGIFT.png", confidence=0.9, grayscale=False),
@@ -198,7 +198,10 @@ class MirrorDungeonRunner:
 
         self.curTeam = self.teams[0]
 
-    def on_screen(self, game_element: GameElement) -> bool:
+    def on_screen(self, game_element: GameElement | str) -> bool:
+        if type(game_element) == str:
+            game_element: GameElement = GAME_ELEMENTS[game_element]
+
         image_path: str = str(IMAGE_DIR.joinpath(game_element.image))
         try:
             pyautogui.locateOnScreen(
@@ -212,7 +215,10 @@ class MirrorDungeonRunner:
             return False
 
     # Pylance say's it's return a "Box" but i can't find what lib that's from, so i'm calling it a tuple
-    def locate_on_screen(self, game_element: GameElement) -> tuple | None:
+    def locate_on_screen(self, game_element: GameElement | str) -> tuple | None:
+        if type(game_element) == str:
+            game_element: GameElement = GAME_ELEMENTS[game_element]
+
         image_path: str = str(IMAGE_DIR.joinpath(game_element.image))
         try:
             return pyautogui.locateOnScreen(
@@ -224,7 +230,10 @@ class MirrorDungeonRunner:
         except:
             return
 
-    def locate_all_on_screen(self, game_element: GameElement):
+    def locate_all_on_screen(self, game_element: GameElement | str) -> list:
+        if type(game_element) == str:
+            game_element: GameElement = GAME_ELEMENTS[game_element]
+
         image_path: str = str(IMAGE_DIR.joinpath(game_element.image))
         try:
             things = list(pyautogui.locateAllOnScreen(
@@ -237,7 +246,10 @@ class MirrorDungeonRunner:
         except:
             return None
 
-    def click_element(self, game_element: GameElement) -> bool:
+    def click_element(self, game_element: GameElement | str) -> bool:
+        if type(game_element) == str:
+            game_element: GameElement = GAME_ELEMENTS[game_element]
+
         try:
             location = self.locate_on_screen(game_element)
             if not location:
@@ -247,7 +259,10 @@ class MirrorDungeonRunner:
         except:
             return False
 
-    def move_to_element(self, game_element: GameElement) -> bool:
+    def move_to_element(self, game_element: GameElement | str) -> bool:
+        if type(game_element) == str:
+            game_element: GameElement = GAME_ELEMENTS[game_element]
+
         try:
             pyautogui.moveTo(self.locate_on_screen(game_element))
             return True
@@ -541,6 +556,7 @@ class MirrorDungeonRunner:
                 pyautogui.press('enter')
             case 16:
                 self.do_shop()
+                self.click_element('Shop_Leave')
             case 17: # Ego Gift Reward 1
                 if not self.click_element(GAME_ELEMENTS['Reward_EGOGIFT']):
                     self.click_element(GAME_ELEMENTS['Reward_Cost'])
