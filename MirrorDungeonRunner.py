@@ -1,5 +1,6 @@
 import pathlib
 import logging
+import random
 import time
 import csv
 import os
@@ -278,7 +279,7 @@ class MirrorDungeonRunner:
 
             if self.on_screen(game_element):
                 if game_element.id == 1: # aka it's the drive button
-                    if self.on_screen(GAME_ELEMENTS['MD5Button']):
+                    if self.on_screen('MD5Button'):
                         return 2
 
                 return game_element.id
@@ -287,7 +288,7 @@ class MirrorDungeonRunner:
 
     def get_to_mirror_dungeon(self) -> None:
         while True:
-            time.sleep(0.1)
+            time.sleep(random.uniform(1.0, 5.0))
 
             state: int = self.find_state()
 
@@ -297,15 +298,15 @@ class MirrorDungeonRunner:
                 case 0:
                     pyautogui.click(self.width/2, self.height/2)
                 case 1:
-                    self.click_element(GAME_ELEMENTS['Drive'])
+                    self.click_element('Drive')
                 case 2:
-                    self.click_element(GAME_ELEMENTS['MD5Button'])
+                    self.click_element('MD5Button')
                 case 3:
                     self.click_element(GameElement(3, "MD5StartButton.png", (715,255,550,650), 0.2))
                 case 4:
-                    self.click_element(GAME_ELEMENTS['EnterMD5'])
+                    self.click_element('EnterMD5')
                 case 6:
-                    self.click_element(GAME_ELEMENTS['ResumeMD5'])
+                    self.click_element('ResumeMD5')
                 case -1:
                     pass
                 case _:
@@ -342,7 +343,7 @@ class MirrorDungeonRunner:
         for i in range(abs(diff)):
             pyautogui.mouseDown()
             pyautogui.moveRel(0, move, duration=0.3, tween=pyautogui.easeOutQuad)
-            time.sleep(0.3)
+            time.sleep(random.uniform(0.3, 0.5))
             pyautogui.mouseUp()
             pyautogui.moveRel(0, -move)
 
@@ -361,10 +362,10 @@ class MirrorDungeonRunner:
 
         for team in self.teams:
             curRow = self.scrollTo(int(team[0]), curRow)
-            time.sleep(0.3)
+            time.sleep(random.uniform(0.3, 2.0))
             pyautogui.click()
 
-            time.sleep(0.1)
+            time.sleep(random.uniform(0.1, 0.7))
 
             rest_bonus: int = self.get_rest_bonus()
             logging.debug(f'{curRow=} {rest_bonus=}')
@@ -377,7 +378,7 @@ class MirrorDungeonRunner:
                 self.curTeam = team
 
         curRow = self.scrollTo(maxTeamRow, curRow)
-        time.sleep(0.1)
+        time.sleep(random.uniform(0.1, 0.7))
         pyautogui.click()
 
         while not self.click_element(GAME_ELEMENTS['ConfirmTeam']):
@@ -408,7 +409,8 @@ class MirrorDungeonRunner:
                 pyautogui.click(533,844)
             case "pierce":
                 pyautogui.click(313,846)
-        time.sleep(0.1)
+
+        time.sleep(random.uniform(0.1, 0.6))
         #select gifts from top to bottom
         pyautogui.click(1463,392)
         pyautogui.click(1463,550)
@@ -435,34 +437,31 @@ class MirrorDungeonRunner:
             time.sleep(0.1)
 
     def do_event(self) -> None:
-        if self.on_screen(GAME_ELEMENTS['Event_Choices']):
-            if not self.click_element(GAME_ELEMENTS['Event_EGOGIFT']):
+        if self.on_screen('Event_Choices'):
+            if not self.click_element('Event_EGOGIFT'):
                 pyautogui.click(1366, 350)
                 pyautogui.click(1366, 600)
                 pyautogui.click(1366, 750)
 
         # Try to click best chances
-        if self.on_screen(GAME_ELEMENTS["Event_Predicted"]):
+        if self.on_screen("Event_Predicted"):
             for chance in ['VeryHigh', 'High', 'Normal', 'Low', 'VeryLow']:
-                if self.click_element(GAME_ELEMENTS[f'Event_{chance}']):
+                if self.click_element(f'Event_{chance}'):
                     break
 
         for event_state in ['Commence', 'Continue', 'Proceed', 'CommenceBattle']:
             element_name = f'Event_{event_state}'
-            event_element: GameElement = GAME_ELEMENTS[element_name]
 
-            if self.on_screen(event_element):
-                if not self.click_element(event_element):
+            if self.on_screen(element_name):
+                if not self.click_element(element_name):
                     pyautogui.click(1707, 950)
                 break
 
-        if self.click_element(GAME_ELEMENTS['Event_Skip']):
-            pyautogui.click()
-            pyautogui.click()
-            pyautogui.click()
-            pyautogui.click()
-            pyautogui.click()
-            pyautogui.click()
+        if self.click_element('Event_Skip'):
+            for i in range(6):
+                pyautogui.click()
+                time.sleep(random.uniform(0.1, 0.5))
+
 
     def do_shop(self) -> None:
         for shop_name in ["Shop_Item1", "Shop_Item2"]:
@@ -472,127 +471,148 @@ class MirrorDungeonRunner:
 
             for i in shopItems:
                 pyautogui.click(i)
-                time.sleep(0.75)
+                time.sleep(random.uniform(0.75, 3.0))
                 pyautogui.click(1120,712)
-                time.sleep(0.75)
+                time.sleep(random.uniform(0.75, 1.75))
                 pyautogui.click(945,800)
-                time.sleep(0.5)
+                time.sleep(random.uniform(0.5, 1.5))
 
-        self.click_element(GAME_ELEMENTS['Shop_Leave'])
-        time.sleep(0.5)
+        self.click_element('Shop_Leave')
+        time.sleep(random.uniform(0.5, 2.0))
         pyautogui.click(1171,743)
 
     # Main MD Logic Loop
     def process_state(self) -> bool:
         match self.curState:
             case 5: # Team Selection
-                if self.on_screen(GAME_ELEMENTS['Teams']):
+                if self.on_screen('Teams'):
                     self.selectTeam()
+
             case 7: # MD5 Buff Selection
-                if self.on_screen(GAME_ELEMENTS['Starlight_Guidance']):
+                if self.on_screen('Starlight_Guidance'):
                     self.selectBuffs()
-            case 8: # End Buff Selection
-                if self.on_screen(GAME_ELEMENTS['Will_You_Buff']):
-                    self.click_element(GAME_ELEMENTS['ConfirmBuff'])
+
+            case 8: # End Buff Selection4
+                if self.on_screen('Will_You_Buff'):
+                    self.click_element('ConfirmBuff')
+
             case 9: # Starting Gift Selection
-                if self.on_screen(GAME_ELEMENTS['Starting_Gift']):
+                if self.on_screen('Starting_Gift'):
                     self.selectStartingGifts()
+
             case 10:
-                if self.on_screen(GAME_ELEMENTS['EGO_GIFT_GET']):
-                    self.click_element(GAME_ELEMENTS['EGOGift_Confirm'])
+                if self.on_screen('EGO_GIFT_GET'):
+                    self.click_element('EGOGift_Confirm')
+
             case 11: # Pack Selection
-                if self.on_screen(GAME_ELEMENTS['Pack_Hard']):
+                if self.on_screen('Pack_Hard'):
                     pyautogui.click(1363, 100)
-                self.move_to_element(GAME_ELEMENTS['Pack_Hanger'])
+                self.move_to_element('Pack_Hanger')
                 pyautogui.dragRel(0, 500, 1)
+
             case 12: # Node Selection
                 located = False
-                if self.on_screen(GAME_ELEMENTS['Clock_Face']):
-                    time.sleep(0.5)
-                    coords: tuple = self.locate_on_screen(GAME_ELEMENTS['Clock_Face'])
+                if self.on_screen('Clock_Face'):
+                    time.sleep(random.uniform(0.5, 1.5))
+                    coords: tuple = self.locate_on_screen('Clock_Face')
                     if coords:
                         x, y = pyautogui.center(coords)
                         pyautogui.moveTo(x, y)
-                        time.sleep(0.1)
+                        time.sleep(random.uniform(0.1, 0.5))
                         x += 330
                         y -= 280
                         pyautogui.click(x, y)
-                        time.sleep(0.2)
+                        time.sleep(random.uniform(0.2, 0.5))
                         located = True
 
                 failCounter = 0
                 if located:
-                    while not self.on_screen(GAME_ELEMENTS['Enter_Node']):
+                    while not self.on_screen('Enter_Node'):
                         y += 300
                         pyautogui.click(x, y)
-                        time.sleep(0.25)
+                        time.sleep(random.uniform(0.25, 1.5))
                         failCounter += 1
                         if failCounter > 3:
                             break
-                    time.sleep(0.35)
-                    # pyautogui.click(1704,810)
+                    time.sleep(random.uniform(0.35, 1.0))
                     pyautogui.press('enter')
 
-                if self.on_screen(GAME_ELEMENTS['Enter_Node']):
+                if self.on_screen('Enter_Node'):
                     pyautogui.press('enter')
+
             case 13: # Event
                 self.do_event()
+
             case 14: # Pre-fight Sinner Selection
-                if self.on_screen(GAME_ELEMENTS["Team_ClearSelection"]):
+                if self.on_screen("Team_ClearSelection"):
                     pyautogui.click(1715, 720)
-                    time.sleep(0.5)
+                    time.sleep(random.uniform(0.5, 1.0))
                     pyautogui.click(1145, 740)
-                    time.sleep(0.5)
+                    time.sleep(random.uniform(0.5, 1.0))
+
                 for i in range(12):
                     pyautogui.click(SINNER_COORDINATES[self.curTeam[i+2].lower()])
-                time.sleep(0.25)
+                    time.sleep(random.uniform(0.3, 3.5))
+
+                time.sleep(random.uniform(0.25, 0.75))
                 pyautogui.click(1720,880)
-                time.sleep(0.5)
+                time.sleep(random.uniform(0.5, 2))
+
             case 15: # OMG P-ENTER!!!
                 pyautogui.click(self.width / 2, self.height / 6)
-                time.sleep(0.05)
+                time.sleep(random.uniform(0.05, 0.25))
                 pyautogui.press('p')
-                time.sleep(0.05)
+                time.sleep(random.uniform(0.05, 0.25))
                 pyautogui.press('enter')
-            case 16:
+
+            case 16: # Shop
                 self.do_shop()
                 self.click_element('Shop_Leave')
+
             case 17: # Ego Gift Reward 1
-                if not self.click_element(GAME_ELEMENTS['Reward_EGOGIFT']):
-                    self.click_element(GAME_ELEMENTS['Reward_Cost'])
-                time.sleep(0.5)
+                if not self.click_element('Reward_EGOGIFT'):
+                    self.click_element('Reward_Cost')
+                time.sleep(random.uniform(0.5, 1.0))
                 pyautogui.click(1200, 800)
+
             case 18: # Ego Gift Reward 2 (Acquire)
-                if not self.click_element(GAME_ELEMENTS['AcquireEGOGIFT']):
-                    self.click_element(GAME_ELEMENTS['Plus1'])
-                time.sleep(0.2)
+                if not self.click_element('AcquireEGOGIFT'):
+                    self.click_element('Plus1')
+                time.sleep(random.uniform(0.2, 1.5))
                 pyautogui.click(1705, 870)
-            case 19:
+
+            case 19: # Collect Rewards Confirm (pass level up)
                 pyautogui.click(963, 700)
                 return False
-            case 20:
+
+            case 20: # End Victory
                 pyautogui.click(1671, 839)
-            case 21:
+
+            case 21: # End Claim rewards 1
                 pyautogui.click(1150, 750)
-            case 22:
+
+            case 22: # End claim rewards 2
                 pyautogui.click(1150, 750)
-            case 23:
+
+            case 23: # End exploration reward
                 pyautogui.click(1330, 810)
-            case 24:
+
+            case 24: # End exploration complete
                 pyautogui.click(1700, 900)
+
             case 25: # Defeat Failsafe
                 while True:
-                    if self.on_screen(GAME_ELEMENTS['End_Defeat']):
+                    if self.on_screen('End_Defeat'):
                         pyautogui.click(1673, 840)
-                    if self.on_screen(GAME_ELEMENTS['End_NoRewards']):
-                        time.sleep(1)
+                    if self.on_screen('End_NoRewards'):
+                        time.sleep(random.uniform(1.0, 2.5))
                         pyautogui.click(1153, 740)
                         break
-                    elif self.on_screen(GAME_ELEMENTS['End_ExplorationReward']):
+                    elif self.on_screen('End_ExplorationReward'):
                         pyautogui.click(587, 814)
-                    elif self.on_screen(GAME_ELEMENTS['End_ExplorationComplete']):
+                    elif self.on_screen('End_ExplorationComplete'):
                         pyautogui.click(1700, 900)
-                    time.sleep(0.1)
+                    time.sleep(random.uniform(0.1, 0.5))
         return True
 
 
