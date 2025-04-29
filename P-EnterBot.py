@@ -9,7 +9,7 @@ import keyboard
 import MirrorDungeonRunner
 
 parser = argparse.ArgumentParser(
-    prog="(L.C.M.D.D.S) : Limbus Company Mirror Dungeon Do-er Script"
+    prog="(L.C.M.D.D.S.) : Limbus Company Mirror Dungeon Do-er Script"
 )
 parser.add_argument('-r', '--runs', type=int)
 parser.add_argument('-t', '--team', type=int)

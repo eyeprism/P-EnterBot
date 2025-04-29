@@ -1,5 +1,4 @@
 pillow
-mss
 pyautogui
 opencv-python
 keyboard

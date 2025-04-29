@@ -1,4 +1,3 @@
-import pathlib
 import logging
 import random
 import time
@@ -10,9 +9,11 @@ from typing import Self
 
 import pyautogui
 
+from PIL import Image
+
 logging.basicConfig(format='%(levelname)s:%(funcName)s - %(message)s', level=logging.DEBUG)
 
-IMAGE_DIR = pathlib.Path('Images/')
+IMAGE_DIR = 'Images/'
 
 @dataclass
 class GameElement:
@@ -162,6 +163,9 @@ class MirrorDungeonRunner:
     curTeam: list
     teams: list
 
+    resizing_needed: bool = False
+    image_dir: str = IMAGE_DIR
+
     curState: int = -1
 
     def __init__(self, team_id: int | None = None) -> Self:
@@ -174,9 +178,41 @@ class MirrorDungeonRunner:
     def _get_screen_size(self) -> None:
         self.width, self.height = pyautogui.size()
 
-        if (self.width, self.height) != (1920, 1080):
-            print("Wrong Resolution Buster")
-            quit()
+        self.resizing_needed = (self.width, self.height) != (1920, 1080)
+
+        if self.resizing_needed:
+
+            aspect_ratio: float = self.width / self.height
+            if aspect_ratio != 4 / 3:
+                logging.warning(f'Aspect ratio is not 4:3, the program might not work very well. {aspect_ratio=}')
+
+            self.scale_images()
+
+    def scale_images(self) -> None:
+        # Make scaled images dir and wipe it
+        os.makedirs('Scaled_Images/', exist_ok=True)
+
+        for filename in os.listdir('Scaled_Images/'):
+            file_path: str = os.path.join('Scaled_Images/', filename)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
+        # Scale all images for new screen size
+        for filename in os.listdir(self.image_dir):
+            image: Image.Image = Image.open(filename)
+
+            # There are a couple of resampling algorithms that could be used here, LANCZOS is highest quality according to the docs
+            # https://pillow.readthedocs.io/en/stable/handbook/concepts.html#concept-filters
+            resized_image = image.resize(
+                self.scale_coordinate(image.size),
+                resample=Image.Resampling.LANCZOS
+            )
+
+            resized_image_path: str = os.path.join('Scaled_Images/', filename)
+            resized_image.save(resized_image_path)
+
+        # Set image dir to resized images
+        self.image_dir = 'Scaled_Images/'
 
     def _makeConfig(self) -> None:
         with open("Config/TeamConfig.csv", 'w', newline='') as file:
@@ -202,11 +238,31 @@ class MirrorDungeonRunner:
 
         self.curTeam = self.teams[0]
 
+    def scale_coordinate(self, coord: tuple[int, int]) -> tuple[int, int]:
+        x, y = coord
+
+        return (self.scale_x(x), self.scale_y(y))
+
+    def scale_region(self, coords: tuple [int, int, int, int]) -> tuple[int, int, int, int]:
+        # Idk if this order is right, docs don't say!
+        x2, y2, x1, y1 = coords
+
+        return (
+            self.scale_x(x2), self.scale_y(y2),
+            self.scale_x(x1), self.scale_y(y1)
+        )
+
+    def scale_x(self, x: int) -> int:
+        return (x / 1920) * self.width
+
+    def scale_y(self, y: int) -> int:
+        return (y / 1080) * self.height
+
     def on_screen(self, game_element: GameElement | str) -> bool:
         if type(game_element) == str:
             game_element: GameElement = GAME_ELEMENTS[game_element]
 
-        image_path: str = str(IMAGE_DIR.joinpath(game_element.image))
+        image_path: str = os.path.join(self.image_dir, game_element.image)
         try:
             pyautogui.locateOnScreen(
                 image_path,
@@ -223,13 +279,18 @@ class MirrorDungeonRunner:
         if type(game_element) == str:
             game_element: GameElement = GAME_ELEMENTS[game_element]
 
-        image_path: str = str(IMAGE_DIR.joinpath(game_element.image))
+        image_path: str = os.path.join(self.image_dir, game_element.image)
+
+        region = game_element.region
+        if self.resizing_needed:
+            region = self.scale_region(region)
+
         try:
             return pyautogui.locateOnScreen(
                 image_path,
                 confidence=game_element.confidence,
                 grayscale=game_element.grayscale,
-                region=game_element.region
+                region=region
             )
         except:
             return
@@ -238,13 +299,18 @@ class MirrorDungeonRunner:
         if type(game_element) == str:
             game_element: GameElement = GAME_ELEMENTS[game_element]
 
-        image_path: str = str(IMAGE_DIR.joinpath(game_element.image))
+        image_path: str = os.path.join(self.image_dir, game_element.image)
+
+        region = game_element.region
+        if self.resizing_needed:
+            region = self.scale_region(region)
+
         try:
             things = list(pyautogui.locateAllOnScreen(
                 image_path,
                 confidence=game_element.confidence,
                 grayscale=game_element.grayscale,
-                region=game_element.region
+                region=region
             ))
             return things
         except:
@@ -328,7 +394,7 @@ class MirrorDungeonRunner:
 
         # TODO : Add rest bonuses beyond 5 xD
         for i in range(1, 6):
-            temp = self.locate_all_on_screen(GAME_ELEMENTS[f'Rest{i}'])
+            temp = self.locate_all_on_screen(f'Rest{i}')
             if temp:
                 logging.debug(f'{len(temp)}, {i} rest bonuses')
                 rest_bonus += min(len(temp), 12) * i
@@ -353,7 +419,7 @@ class MirrorDungeonRunner:
         return dest
 
     def selectTeam(self) -> None:
-        self.move_to_element(GAME_ELEMENTS['Teams'])
+        self.move_to_element('Teams')
         pyautogui.moveRel(0, 50)
 
         for i in range(30):
@@ -384,7 +450,7 @@ class MirrorDungeonRunner:
         time.sleep(random.uniform(0.1, 0.7))
         pyautogui.click()
 
-        while not self.click_element(GAME_ELEMENTS['ConfirmTeam']):
+        while not self.click_element('ConfirmTeam'):
             pass
 
         time.sleep(1)
@@ -468,7 +534,7 @@ class MirrorDungeonRunner:
 
     def do_shop(self) -> None:
         for shop_name in ["Shop_Item1", "Shop_Item2"]:
-            shopItems = self.locate_all_on_screen(GAME_ELEMENTS[shop_name])
+            shopItems = self.locate_all_on_screen(shop_name)
             if not shopItems:
                 continue
 
