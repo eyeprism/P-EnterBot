@@ -1,6 +1,6 @@
 ﻿# P-EnterBot!
 
-A programmed designed to run mirror dungeons in the hit Korean gacha game Limbus Company by Project Moon.
+A program designed to run mirror dungeons in the hit Korean gacha game Limbus Company by Project Moon.
 
 ![Danteh](https://github.com/user-attachments/assets/44e90f4a-7d69-4dea-973a-22a62fd7e507)
 
