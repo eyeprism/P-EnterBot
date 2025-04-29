@@ -33,7 +33,11 @@ def main():
     else:
         runs = args.runs
 
-    mirror_dungeon_runner = MirrorDungeonRunner.MirrorDungeonRunner()
+    team_id: int | None = None
+    if args.team:
+        team_id = args.team
+
+    mirror_dungeon_runner = MirrorDungeonRunner.MirrorDungeonRunner(team_id)
     for i in range(runs):
         print(f"Doing run {i}")
         mirror_dungeon_runner.run_md()

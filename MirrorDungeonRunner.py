@@ -164,9 +164,12 @@ class MirrorDungeonRunner:
 
     curState: int = -1
 
-    def __init__(self) -> Self:
+    def __init__(self, team_id: int | None = None) -> Self:
         self._get_screen_size()
         self._loadTeamConfigs()
+
+        if team_id:
+            self.curTeam = self.teams[team_id]
 
     def _get_screen_size(self) -> None:
         self.width, self.height = pyautogui.size()
