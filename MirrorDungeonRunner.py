@@ -183,8 +183,8 @@ class MirrorDungeonRunner:
         if self.resizing_needed:
 
             aspect_ratio: float = self.width / self.height
-            if aspect_ratio != 4 / 3:
-                logging.warning(f'Aspect ratio is not 4:3, the program might not work very well. {aspect_ratio=}')
+            if aspect_ratio != 16 / 9:
+                logging.warning(f'Aspect ratio is not 16:9, the program might not work very well. {aspect_ratio=}')
 
             self.scale_images()
 
