@@ -1,9 +1,5 @@
 bin
-*.csv#
+
 build
-*.csv
+
 .vscode
-__pycache__
-.screenshot*.png
-venv
-TeamConfig.csv
