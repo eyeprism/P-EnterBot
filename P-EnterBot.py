@@ -102,6 +102,7 @@ def findState():
         return 24
     if locateOnScreenBool("Images/End_Defeat.png", confidence = 0.8, grayscale = True, region = (1475,192,300,150)):
         return 25
+    if locateOnScreenBool("Images/Battle_Identity_Profile_Skillbutton.png", confidence = 0.8, grayscale = True, region = )
     return -1 #unknown state/tansitionary state
 
 def getToMirrorDungeon():
