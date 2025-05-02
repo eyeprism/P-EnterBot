@@ -100,10 +100,11 @@ def findState():
         return 23
     if locateOnScreenBool("Images/End_ExplorationComplete.png", confidence = 0.8, grayscale = True, region = (179,112,300,200)):
         return 24
-    if locateOnScreenBool("Images/End_Defeat.png", confidence = 0.8, grayscale = True, region = (1475,192,300,150)):
+    if locateOnScreenBool("Images/Battle_Skill.png", confidence = 0.8, grayscale = True, region = (1172,371,1162,58)):
         return 25
-    if locateOnScreenBool("Images/Battle_Identity_Profile_Skillbutton.png", confidence = 0.8, grayscale = True, region = )
-    return -1 #unknown state/tansitionary state
+    if locateOnScreenBool("Images/End_Defeat.png", confidence = 0.8, grayscale = True, region = (1475,192,300,150)):
+        return 26
+    return -1 #unknown state/transitionary state
 
 def getToMirrorDungeon():
     while(True):
@@ -381,6 +382,8 @@ def mainFunc():
                         x,y = pyautogui.center(pyautogui.locateOnScreen("Images/Clock_Face.png", confidence = 0.9))
                         pyautogui.moveTo(x,y)
                         time.sleep(0.1)
+                        pyautogui.click(x,y)
+                        time.sleep(0.25)
                         x += 330
                         y -= 280
                         pyautogui.click(x,y)
@@ -396,6 +399,7 @@ def mainFunc():
                         time.sleep(0.25)
                         failCounter += 1
                         if (failCounter > 3):
+
                             break
                     time.sleep(0.35)
                     pyautogui.click(1704,810)
@@ -552,7 +556,9 @@ def mainFunc():
                 pyautogui.click(1330, 810)
             case 24:
                 pyautogui.click(1700, 900)
-            case 25: #Defeat failsafe
+            case 25:
+                pyautogui.click(100, 100)
+            case 26: #Defeat failsafe
                 while (True):
                     if locateOnScreenBool("Images/End_Defeat.png", confidence = 0.8, grayscale = True, region = (1475,192,300,150)):
                         pyautogui.click(1673, 840)
