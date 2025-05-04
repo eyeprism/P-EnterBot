@@ -85,44 +85,29 @@ def doEXPLux():
                 except:
                     pass
             case 2: 
-                try: 
-                    pyautogui.click(666,250)
-                except:
-                    pass
+                pyautogui.click(666,250)
             case 3:
-                try:
-                    pyautogui.click(1662, 711)
-                except:
-                    pass
+                pyautogui.click(1662, 711)
             case 4:
-                try:
-                    pyautogui.click(1715, 720)
-                    time.sleep(0.5)
-                    pyautogui.click(1145, 740)
-                    time.sleep(0.5)
-                    for i in range(6):
-                        pyautogui.click(sinnerCoordinates[EXP_team[i].lower()])
-                    time.sleep(.5)
-                    pyautogui.click(1720,880)
-                    time.sleep(5)
-                except:
-                    pass
+                pyautogui.click(1715, 720)
+                time.sleep(0.5)
+                pyautogui.click(1145, 740)
+                time.sleep(0.5)
+                for i in range(6):
+                    pyautogui.click(sinnerCoordinates[EXP_team[i].lower()])
+                time.sleep(.5)
+                pyautogui.click(1720,880)
+                time.sleep(5)
             case 5:#OMG P-ENTER!!!
-                try:
-                    pyautogui.click(width/2,height/6)
-                    time.sleep(0.05)
-                    pyautogui.press('p')
-                    time.sleep(0.05)
-                    pyautogui.press('enter')
-                except:
-                    pass
+                pyautogui.click(width/2,height/6)
+                time.sleep(0.05)
+                pyautogui.press('p')
+                time.sleep(0.05)
+                pyautogui.press('enter')
             case 6:
-                try:
-                    time.sleep(0.5)
-                    pyautogui.click(1660,840)
-                    done = True
-                except:
-                    pass
+                time.sleep(0.5)
+                pyautogui.click(1660,840)
+                done = True
             case 7:
                 pyautogui.click(100, 100)
 def doThreadLux(skips):
@@ -139,38 +124,25 @@ def doThreadLux(skips):
                 except:
                     pass
             case 2: 
-                try: 
-                    pyautogui.click(666,250)
-                except:
-                    pass
+                pyautogui.click(666,250)
             case 3:
-                try:
-                    
-                    pyautogui.click(200, 500)
-                    time.sleep(0.5)
-                    pyautogui.click(555, 770)
-                    time.sleep(0.5)
-                    pyautogui.click(935, 720)
-                    time.sleep(0.5)
-                    pyautogui.click(1140, 730)
-                except:
-                    pass
+                pyautogui.click(200, 500)
+                time.sleep(0.5)
+                pyautogui.click(555, 770)
+                time.sleep(0.5)
+                pyautogui.click(935, 720)
+                time.sleep(0.5)
+                pyautogui.click(1140, 730)
             case 5:#OMG P-ENTER!!!
-                try:
-                    pyautogui.click(width/2,height/6)
-                    time.sleep(0.05)
-                    pyautogui.press('p')
-                    time.sleep(0.05)
-                    pyautogui.press('enter')
-                except:
-                    pass
+                pyautogui.click(width/2,height/6)
+                time.sleep(0.05)
+                pyautogui.press('p')
+                time.sleep(0.05)
+                pyautogui.press('enter')
             case 6:
-                try:
-                    time.sleep(0.5)
-                    pyautogui.click(1660,840)
-                    skips -= 1
-                except:
-                    pass
+                time.sleep(0.5)
+                pyautogui.click(1660,840)
+                skips -= 1
             case 7:
                 pyautogui.click(100, 100)
 
@@ -184,11 +156,8 @@ def convertModules():
             case 0:
                 pyautogui.click(x = width/2, y = height/2)
             case 1:
-                try:
-                    pyautogui.click(570, 1000)
-                except:
-                    pass
-            case 8:
+                pyautogui.click(570, 1000)
+            case 8:#convert modules
                 pyautogui.click(950, 340)
                 time.sleep(0.5)
                 pyautogui.click(1132, 800)
