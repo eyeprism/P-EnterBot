@@ -57,7 +57,7 @@ def findState():
         return 1
     if locateOnScreenBool("Images/Enter_EXPLux.png", confidence = 0.8, grayscale = True, region = (1530,699,265,44)): #1662, 711 exp lux visible
         return 3    
-    if locateOnScreenBool("Images/Team_ClearSelection.png", confidence = 0.8, grayscale = True, region = (1550,650,300,100)):#1606,697
+    if locateOnScreenBool("Images/Team_ClearSelection.png", confidence = 0.8, grayscale = False, region = (1550,650,300,100)):#1606,697
         return 4
     if locateOnScreenBool("Images/Battle_Winrate.png", confidence = 0.8, grayscale = True, region = (800,750,1120,200)):#1515 765, 1815 900
         return 5
@@ -75,6 +75,7 @@ def findState():
         return 11
     if locateOnScreenBool("Images/Enkephalin_Insufficient.png", confidence = 0.8, grayscale = True, region = (800, 710, 300, 60)):
         return 12
+    
 
     #720, 40
     return -1
@@ -98,11 +99,13 @@ def doEXPLux():
                 pyautogui.click(666,250)
             case 3:
                 pyautogui.click(1662, 711)
+                neutralizeMousePos()
             case 4:
                 pyautogui.click(1715, 720)
-                time.sleep(1)
-                pyautogui.click(1145, 740)
-                time.sleep(1)
+                time.sleep(1)#700, 400, 500, 200
+                if locateOnScreenBool("Images/Team_ResetDeploymentOrder.png", confidence = 0.75, grayscale = True, region = (700, 400, 500, 200)):
+                    pyautogui.click(1145, 740)
+                    time.sleep(1)
                 for i in range(6):
                     pyautogui.click(sinnerCoordinates[EXP_team[i].lower()])
                     time.sleep(0.2)
@@ -221,13 +224,13 @@ def mainFunc():
         except:
             print("num must be integer")
             quit()
-    refills = pyautogui.prompt(text = "how many lunacy enkephalin refills?", title = "StartMenu", default = 1)
-    try:
-        refills = int(refills)
-    except:
-        print("Num refills must be integer")
-        quit()
-    convertModules(refills)
+    #refills = pyautogui.prompt(text = "how many lunacy enkephalin refills?", title = "StartMenu", default = 1)
+    #try:
+    #    refills = int(refills)
+    #except:
+    #    print("Num refills must be integer")
+    #    quit()
+    #convertModules(refills)
     if choice == 1 or choice == 3:
         doEXPLux()
     if choice == 2 or choice == 3:
