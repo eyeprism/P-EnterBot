@@ -465,7 +465,7 @@ class MirrorDungeonRunner:
 
     def get_to_mirror_dungeon(self) -> None:
         while True:
-            time.sleep(random.uniform(1.0, 3.0))
+            time.sleep(random.uniform(1.0, 2.0))
 
             state: int = self.find_state()
 
@@ -520,7 +520,7 @@ class MirrorDungeonRunner:
         for i in range(abs(diff)):
             pyautogui.mouseDown()
             pyautogui.moveRel(0, move, duration=0.3, tween=pyautogui.easeOutQuad)
-            time.sleep(random.uniform(0.3, 0.5))
+            time.sleep(random.uniform(0.3, 0.4))
             pyautogui.mouseUp()
             pyautogui.moveRel(0, -move)
 
@@ -562,10 +562,10 @@ class MirrorDungeonRunner:
                 continue
 
             curRow = self.scrollTo(int(team[0]), curRow)
-            time.sleep(random.uniform(0.3, 1.5))
+            time.sleep(random.uniform(0.3, 0.75))
             self.human_click()
 
-            time.sleep(random.uniform(0.1, 0.7))
+            time.sleep(random.uniform(0.1, 0.4))
 
             rest_bonus: int = self.get_rest_bonus()
             logging.debug(f'{curRow=} {rest_bonus=}')
@@ -578,7 +578,7 @@ class MirrorDungeonRunner:
                 self.saveSelectedTeam(team_i)
 
         curRow = self.scrollTo(maxTeamRow, curRow)
-        time.sleep(random.uniform(0.1, 0.7))
+        time.sleep(random.uniform(0.1, 0.4))
         self.human_click()
 
         while not self.human_click('ConfirmTeam'):
@@ -674,14 +674,14 @@ class MirrorDungeonRunner:
 
             for i in shopItems:
                 pyautogui.click(i) # because i is probably a Box?
-                time.sleep(random.uniform(0.75, 3.0))
+                time.sleep(random.uniform(0.75, 1.5))
                 self.human_click(1120,712)
-                time.sleep(random.uniform(0.75, 1.75))
+                time.sleep(random.uniform(0.75, 1.5))
                 self.human_click(945,800)
-                time.sleep(random.uniform(0.5, 1.5))
+                time.sleep(random.uniform(0.5, 1))
 
         self.human_click('Shop_Leave')
-        time.sleep(random.uniform(0.5, 2.0))
+        time.sleep(random.uniform(0.5, 1.2))
         self.human_click(1171,743)
 
     #Worst Code Of All Time + Might Not Always Work
@@ -936,16 +936,16 @@ class MirrorDungeonRunner:
         if self.hardMode:
             if self.on_screen('AcquireEGOSelect'): #occasional case where you only have to pick 1 in hardmode
                 self.choose_best_gift()
-                time.sleep(random.uniform(0.2, 1.5))
+                time.sleep(random.uniform(0.2, 1))
                 self.human_click(1705, 870)
             else:
                 while not self.on_screen('TwoOfTwo'):
                     self.choose_best_gift()
-                time.sleep(random.uniform(0.2, 1.5))
+                time.sleep(random.uniform(0.2, 1))
                 self.human_click(1705, 870)
         else:
             self.choose_best_gift()
-            time.sleep(random.uniform(0.2, 1.5))
+            time.sleep(random.uniform(0.2, 1))
             self.human_click(1705, 870)
 
     # Main MD Logic Loop
@@ -994,7 +994,7 @@ class MirrorDungeonRunner:
                 if (not self.node_pathfind()):
                     located = False
                     if self.on_screen('Clock_Face'):
-                        time.sleep(random.uniform(0.5, 1.5))
+                        time.sleep(random.uniform(0.5, 1))
                         coords: tuple = self.locate_on_screen('Clock_Face')
                         if coords:
                             x, y = pyautogui.center(coords)
@@ -1012,7 +1012,7 @@ class MirrorDungeonRunner:
                             logging.debug(f'trying to enter node {x=} {y=}')
                             y += 300
                             self.human_click(x, y)
-                            time.sleep(random.uniform(0.25, 1.5))
+                            time.sleep(random.uniform(0.25, 1))
                             failCounter += 1
                             if failCounter > 3:
                                 break
@@ -1041,7 +1041,7 @@ class MirrorDungeonRunner:
 
                 time.sleep(random.uniform(0.25, 0.75))
                 self.human_click(1720,880)
-                time.sleep(random.uniform(0.5, 2))
+                time.sleep(random.uniform(0.5, 1.2))
 
             case 15: # OMG P-ENTER!!!
                 self.human_click(self.width / 2, self.height / 6)
@@ -1098,7 +1098,7 @@ class MirrorDungeonRunner:
                     if self.on_screen('End_Defeat'):
                         self.human_click(1673, 840)
                     if self.on_screen('End_NoRewards'):
-                        time.sleep(random.uniform(1.0, 2.5))
+                        time.sleep(random.uniform(1.0, 2))
                         self.human_click(1153, 740)
                         break
                     elif self.on_screen('End_ExplorationReward'):
